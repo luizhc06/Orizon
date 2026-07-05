@@ -39,10 +39,10 @@ class AboutScreen extends StatelessWidget {
           ListTile(
             title: Text(l10n.aboutPrivacyPolicy),
             trailing: const Icon(Icons.open_in_new),
-            // TODO: apontar pra uma página de política de privacidade
-            // publicada antes de submeter na Play Store.
             onTap: () => launchUrl(
-              Uri.parse('https://github.com/luizhc06/Orizon'),
+              Uri.parse(
+                'https://github.com/luizhc06/Orizon/blob/main/PRIVACY.md',
+              ),
               mode: LaunchMode.externalApplication,
             ),
           ),
