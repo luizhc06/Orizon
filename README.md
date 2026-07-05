@@ -32,6 +32,19 @@ to search for it are blocked with a warning.
 - A News tab with the changelog and a live status check for your
   configured sources, run from your own device
 
+## Screenshots
+
+<p align="center">
+  <img src="screenshots/03_search_results.png" width="230" alt="Tag search with results grid" />
+  <img src="screenshots/04_viewer.png" width="230" alt="Full-screen viewer" />
+  <img src="screenshots/05_favorites.png" width="230" alt="Favorites" />
+</p>
+<p align="center">
+  <img src="screenshots/01_launch.png" width="230" alt="Settings with themes" />
+  <img src="screenshots/06_news.png" width="230" alt="News and changelog" />
+  <img src="screenshots/07_site_status.png" width="230" alt="Source status check" />
+</p>
+
 ## Privacy
 
 No accounts, no analytics, no ads, no server of ours. Everything is stored
