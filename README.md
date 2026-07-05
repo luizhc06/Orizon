@@ -35,14 +35,13 @@ to search for it are blocked with a warning.
 ## Screenshots
 
 <p align="center">
-  <img src="screenshots/03_search_results.png" width="230" alt="Tag search with results grid" />
-  <img src="screenshots/04_viewer.png" width="230" alt="Full-screen viewer" />
-  <img src="screenshots/05_favorites.png" width="230" alt="Favorites" />
+  <img src="screenshots/en_onboarding.png" width="230" alt="Welcome screen" />
+  <img src="screenshots/en_search.png" width="230" alt="Tag search with results grid" />
+  <img src="screenshots/en_settings.png" width="230" alt="Settings" />
 </p>
 <p align="center">
-  <img src="screenshots/01_launch.png" width="230" alt="Settings with themes" />
-  <img src="screenshots/06_news.png" width="230" alt="News and changelog" />
-  <img src="screenshots/07_site_status.png" width="230" alt="Source status check" />
+  <img src="screenshots/en_themes.png" width="230" alt="Color themes" />
+  <img src="screenshots/en_news.png" width="230" alt="News and changelog" />
 </p>
 
 ## Privacy
