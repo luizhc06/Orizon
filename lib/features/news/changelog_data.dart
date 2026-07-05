@@ -13,6 +13,19 @@ class ChangelogEntry {
 /// Changelog estático, mantido manualmente a cada mudança relevante.
 const List<ChangelogEntry> changelogEntries = [
   ChangelogEntry(
+    version: '1.0.2',
+    date: '2026-07-05',
+    changes: [
+      'Adicionado: controles completos de vídeo no viewer (play/pause, '
+          'barra de progresso com busca, tempo e mudo).',
+      'Corrigido: vídeo que falha ao carregar agora mostra erro em vez de '
+          'carregar pra sempre.',
+      'Corrigido: URLs com query string quebravam o download e a detecção '
+          'de tipo de arquivo.',
+      'Corrigido: toque duplo rápido no favorito duplicava o registro.',
+    ],
+  ),
+  ChangelogEntry(
     version: '1.0.1',
     date: '2026-07-05',
     changes: [
