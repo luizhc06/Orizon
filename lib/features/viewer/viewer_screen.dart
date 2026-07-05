@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -115,42 +116,175 @@ class _VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
   late final VideoPlayerController _controller;
+  bool _showControls = true;
+  Timer? _hideTimer;
 
   @override
   void initState() {
     super.initState();
     _controller = VideoPlayerController.networkUrl(Uri.parse(widget.url))
-      ..initialize().then((_) {
-        if (mounted) setState(() {});
-        _controller
-          ..setLooping(true)
-          ..play();
-      });
+      ..initialize()
+          .then((_) {
+            if (!mounted) return;
+            _controller
+              ..setLooping(true)
+              ..play();
+            _scheduleHide();
+          })
+          .catchError((Object _) {
+            // hasError já fica true no value; o builder mostra o estado de erro.
+          });
   }
 
   @override
   void dispose() {
+    _hideTimer?.cancel();
     _controller.dispose();
     super.dispose();
   }
 
+  void _scheduleHide() {
+    _hideTimer?.cancel();
+    _hideTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted && _controller.value.isPlaying) {
+        setState(() => _showControls = false);
+      }
+    });
+  }
+
+  void _toggleControls() {
+    setState(() => _showControls = !_showControls);
+    if (_showControls) _scheduleHide();
+  }
+
+  void _togglePlay() {
+    if (_controller.value.isPlaying) {
+      _controller.pause();
+      _hideTimer?.cancel();
+    } else {
+      _controller.play();
+      _scheduleHide();
+    }
+  }
+
+  void _toggleMute() {
+    _controller.setVolume(_controller.value.volume > 0 ? 0 : 1);
+    _scheduleHide();
+  }
+
+  static String _formatDuration(Duration d) {
+    final minutes = d.inMinutes;
+    final seconds = (d.inSeconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (!_controller.value.isInitialized) {
-      return const Center(child: CircularProgressIndicator());
-    }
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _controller.value.isPlaying ? _controller.pause() : _controller.play();
-        });
+    return ValueListenableBuilder<VideoPlayerValue>(
+      valueListenable: _controller,
+      builder: (context, value, _) {
+        if (value.hasError) {
+          return const Center(
+            child: Icon(Icons.error_outline, color: Colors.white54, size: 48),
+          );
+        }
+        if (!value.isInitialized) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return GestureDetector(
+          onTap: _toggleControls,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Center(
+                child: AspectRatio(
+                  aspectRatio: value.aspectRatio,
+                  child: VideoPlayer(_controller),
+                ),
+              ),
+              AnimatedOpacity(
+                opacity: _showControls ? 1 : 0,
+                duration: const Duration(milliseconds: 200),
+                child: IgnorePointer(
+                  ignoring: !_showControls,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      IconButton(
+                        iconSize: 64,
+                        color: Colors.white,
+                        icon: Icon(
+                          value.isPlaying
+                              ? Icons.pause_circle_filled
+                              : Icons.play_circle_filled,
+                        ),
+                        onPressed: _togglePlay,
+                      ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [Colors.transparent, Colors.black87],
+                            ),
+                          ),
+                          padding: const EdgeInsets.fromLTRB(12, 24, 12, 8),
+                          child: Row(
+                            children: [
+                              Text(
+                                _formatDuration(value.position),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: VideoProgressIndicator(
+                                  _controller,
+                                  allowScrubbing: true,
+                                  colors: VideoProgressColors(
+                                    playedColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    bufferedColor: Colors.white38,
+                                    backgroundColor: Colors.white12,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                _formatDuration(value.duration),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              IconButton(
+                                color: Colors.white,
+                                icon: Icon(
+                                  value.volume > 0
+                                      ? Icons.volume_up
+                                      : Icons.volume_off,
+                                ),
+                                onPressed: _toggleMute,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
       },
-      child: Center(
-        child: AspectRatio(
-          aspectRatio: _controller.value.aspectRatio,
-          child: VideoPlayer(_controller),
-        ),
-      ),
     );
   }
 }
@@ -167,6 +301,7 @@ class _ViewerBottomBar extends ConsumerStatefulWidget {
 class _ViewerBottomBarState extends ConsumerState<_ViewerBottomBar> {
   bool _isFavorite = false;
   bool _isDownloading = false;
+  bool _favoriteBusy = false;
 
   @override
   void initState() {
@@ -187,13 +322,21 @@ class _ViewerBottomBarState extends ConsumerState<_ViewerBottomBar> {
   }
 
   Future<void> _toggleFavorite() async {
-    final db = ref.read(appDatabaseProvider);
-    if (_isFavorite) {
-      await db.removeFavorite(widget.post.sourceId, widget.post.id);
-    } else {
-      await db.addFavorite(widget.post.toFavoritesCompanion());
+    // Guarda contra toque duplo rápido: sem isso, dois adds concorrentes
+    // inserem o mesmo post duas vezes (a tabela não tem unique constraint).
+    if (_favoriteBusy) return;
+    _favoriteBusy = true;
+    try {
+      final db = ref.read(appDatabaseProvider);
+      if (_isFavorite) {
+        await db.removeFavorite(widget.post.sourceId, widget.post.id);
+      } else {
+        await db.addFavorite(widget.post.toFavoritesCompanion());
+      }
+      if (mounted) setState(() => _isFavorite = !_isFavorite);
+    } finally {
+      _favoriteBusy = false;
     }
-    if (mounted) setState(() => _isFavorite = !_isFavorite);
   }
 
   Future<void> _download() async {
@@ -217,8 +360,13 @@ class _ViewerBottomBarState extends ConsumerState<_ViewerBottomBar> {
 
       if (widget.post.fileType == PostFileType.video) {
         // Gal só salva vídeo a partir de um caminho de arquivo, não bytes.
+        // Extensão extraída do path da URL (não da URL inteira) pra não
+        // arrastar query string pro nome do arquivo.
         final tempDir = await getTemporaryDirectory();
-        final extension = widget.post.fileUrl.split('.').last;
+        final urlPath = Uri.parse(widget.post.fileUrl).path;
+        final extension = urlPath.contains('.')
+            ? urlPath.split('.').last
+            : 'mp4';
         final tempFile = File(
           '${tempDir.path}/orizon_${widget.post.id}.$extension',
         );

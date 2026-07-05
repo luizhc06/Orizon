@@ -61,7 +61,11 @@ class MoebooruApi implements BooruApi {
       height: (json['height'] as num?)?.toInt() ?? 0,
       tags: tagString.isEmpty ? const [] : tagString.split(' '),
       rating: ratingFromLegacyCode(json['rating'] as String?),
-      fileType: fileTypeFromExtension(fileUrl.split('.').last),
+      // Extensão vem do path da URL, não da URL inteira — query string
+      // (ex: .mp4?token=x) quebraria a detecção de tipo.
+      fileType: fileTypeFromExtension(
+        Uri.tryParse(fileUrl)?.path.split('.').last,
+      ),
       sourcePostUrl: '${source.baseUrl}/post/show/${json['id']}',
     );
   }

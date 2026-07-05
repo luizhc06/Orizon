@@ -1,33 +1,41 @@
 # Orizon
 
-Orizon is a mobile booru client built with Flutter. It searches whatever
-image board sources you add yourself — nothing is bundled or promoted by
-default beyond a single safe preset (Safebooru).
+Orizon is a mobile client for booru-style image boards, built with Flutter.
+You choose which sources to browse; the app ships with a single safe preset
+(Safebooru) and a clean, comfortable reading experience.
 
-## Content policy
+## Safety first
 
-- Adult content is **off by default**. You can turn it on in Settings, but
-  what you see after that depends entirely on the setting and the sources
-  you choose to add. Orizon does not promote or endorse adult content.
-- One rule is fixed and cannot be changed from the UI: Orizon will never
-  show content that sexualizes minors, under any configuration. Trying to
-  search for it triggers a hard warning instead of a result.
+Orizon is safe by default. Search results are filtered to safe-rated content
+unless you explicitly change that in Settings, and what you see always
+depends on your own configuration and the sources you choose to add.
+
+One protection is permanent and cannot be disabled from the UI: Orizon never
+displays content that sexualizes minors, under any configuration. Attempts
+to search for it are blocked with a warning.
 
 ## Features
 
 - Tag search with live autocomplete and chip-based input
 - Multi-booru mode: search several sources at once
-- Source manager with quick suggestions (Danbooru, Gelbooru, e621, Konachan)
-  plus support for any custom booru (Danbooru / Gelbooru 0.2 / Moebooru APIs)
-- Full-screen viewer with pinch-to-zoom and video playback
+- Source manager with quick suggestions, plus support for any custom booru
+  (Danbooru / Gelbooru 0.2 / Moebooru compatible APIs)
+- Full-screen viewer with pinch-to-zoom and full video controls
+  (play/pause, seek bar, mute)
 - Favorites and download history, saving straight to your gallery
-- Tag blacklist (yours, on top of the fixed base rule above) and an
-  optional AI-generated image filter
-- 4 color themes, custom typography, light/dark variants
+- Personal tag blacklist and an optional AI-generated image filter
+- Backup and restore of your sources, favorites and settings
+- Cache controls: clear on demand or automatically on close
+- 4 color themes, custom typography, light and dark variants
 - 10 languages: English, Portuguese, Spanish, French, German, Italian,
   Japanese, Korean, Chinese, Russian
-- A News tab with the changelog and a live status/ping check for your
+- A News tab with the changelog and a live status check for your
   configured sources, run from your own device
+
+## Privacy
+
+No accounts, no analytics, no ads, no server of ours. Everything is stored
+locally on your device. See [PRIVACY.md](PRIVACY.md) for details.
 
 ## Tech stack
 
