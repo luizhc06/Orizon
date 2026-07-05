@@ -1,0 +1,121 @@
+{
+  "@@locale": "en",
+  "appTitle": "Orizon",
+
+  "onboardingWelcome": "Welcome to Orizon",
+  "onboardingBody1": "Orizon is a booru client that searches the sources you add yourself. The adult content toggle is off by default; what shows up depends on your own configuration and choices. The responsibility for that choice is yours.",
+  "onboardingBody2": "One fixed exception that always applies, regardless of any setting: Orizon never shows content that sexualizes minors, no exceptions.",
+  "onboardingBody3": "You can manage sources and the blocklist anytime in settings.",
+  "onboardingStart": "Start",
+  "onboardingStartWithTimer": "Start ({seconds}s)",
+  "@onboardingStartWithTimer": {
+    "placeholders": { "seconds": { "type": "int" } }
+  },
+
+  "navHome": "Home",
+  "navNews": "News",
+  "navFavorites": "Favorites",
+  "navSettings": "Settings",
+
+  "newsTitle": "News",
+  "newsChangelogTab": "Changelog",
+  "newsStatusTab": "Site status",
+  "siteStatusChecking": "Checking...",
+  "siteStatusOffline": "Offline",
+  "siteStatusLatency": "{ms} ms",
+  "@siteStatusLatency": {
+    "placeholders": { "ms": { "type": "int" } }
+  },
+
+  "settingsTitle": "Settings",
+  "settingsSources": "Sources",
+  "settingsBlacklist": "Tag blacklist",
+  "settingsHideAi": "Hide AI images",
+  "settingsHideAiSubtitle": "Hides posts tagged as AI-generated (Stable Diffusion, NovelAI, Midjourney, etc.).",
+  "settingsDownloadHistory": "Download history",
+  "settingsShowAdult": "Show adult content",
+  "settingsShowAdultSubtitle": "Off by default. Orizon does not promote adult content. If you turn this on, sexually explicit or suggestive images may appear, depending on the sources you add yourself. You are responsible for that choice.",
+  "settingsMultiBooru": "Multi-booru search",
+  "settingsMultiBooruSubtitle": "Search several sources at once instead of just one. May take longer to load.",
+  "settingsTheme": "Theme",
+  "settingsGridColumns": "Grid columns",
+  "settingsGridStyle": "Grid style",
+  "settingsGridStyleSubtitle": "Organic fits each preview to the image's aspect ratio; uniform uses equal-sized cells.",
+  "settingsGridOrganic": "Organic",
+  "settingsGridUniform": "Uniform",
+  "settingsLanguage": "Language",
+  "settingsDiscord": "Discord",
+  "settingsDiscordSubtitle": "Orizon's Brazilian community 🇧🇷",
+  "settingsSupport": "Buy me a coffee",
+  "settingsAbout": "About",
+
+  "themeWhiteRed": "White + red",
+  "themeWhitePurple": "White + purple",
+  "themeBlackRed": "Black + red",
+  "themePurpleBlack": "Purple + black",
+
+  "aboutTitle": "About",
+  "aboutSubtitle": "Booru viewer",
+  "aboutPrivacyPolicy": "Privacy policy",
+  "aboutLicenses": "Open source licenses",
+
+  "sourcesTitle": "Sources",
+  "sourcesEmpty": "No sources added",
+  "sourcesLoadError": "Error loading sources: {error}",
+  "@sourcesLoadError": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "sourcesAddTooltip": "Add custom source",
+  "sourcesRemoveTooltip": "Remove source",
+
+  "sourceFormNew": "New source",
+  "sourceFormEdit": "Edit source",
+  "sourceFormSuggestions": "Suggestions",
+  "sourceFormName": "Name",
+  "sourceFormBaseUrl": "Base URL",
+  "sourceFormApiType": "API type",
+  "sourceFormUsername": "Username (optional)",
+  "sourceFormApiKey": "API key (optional)",
+  "sourceFormRequired": "Required",
+  "sourceFormInvalidUrl": "Invalid URL",
+  "apiTypeDanbooru": "Danbooru (and derivatives)",
+  "apiTypeGelbooru": "Gelbooru 0.2 (Gelbooru/Safebooru/Rule34)",
+  "apiTypeMoebooru": "Moebooru (yande.re/konachan)",
+
+  "blacklistTitle": "Tag blacklist",
+  "blacklistFixed": "Always blocked (fixed, not editable)",
+  "blacklistUser": "Your blocked tags",
+  "blacklistAddHint": "add tag...",
+  "errorGeneric": "Error: {error}",
+  "@errorGeneric": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+
+  "favoritesTitle": "Favorites",
+  "favoritesEmpty": "No favorites yet",
+
+  "downloadHistoryTitle": "Download history",
+  "downloadHistoryEmpty": "No downloads yet",
+
+  "searchRefreshTooltip": "Search again",
+  "searchTagHint": "Add tag...",
+  "searchNoSourceEnabled": "No source enabled",
+  "searchNoSourceSelected": "No source selected",
+  "searchLoading": "Searching...",
+  "searchEmptyState": "Add a tag to start",
+  "searchMultiWarning": "Multiple sources selected — search may take longer to load.",
+  "searchError": "Search error: {error}",
+  "@searchError": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "shameWarningMessage": "You should not be searching for this. This kind of content is never allowed here, no exceptions. Be ashamed of yourself.",
+  "shameWarningButton": "I understand",
+
+  "viewerOpenBrowser": "Open in browser",
+  "viewerPermissionDenied": "Gallery permission denied",
+  "viewerSaved": "Saved to gallery",
+  "viewerDownloadError": "Download error: {error}",
+  "@viewerDownloadError": {
+    "placeholders": { "error": { "type": "String" } }
+  }
+}

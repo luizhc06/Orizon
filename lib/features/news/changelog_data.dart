@@ -1,0 +1,27 @@
+class ChangelogEntry {
+  final String version;
+  final String date;
+  final List<String> changes;
+
+  const ChangelogEntry({
+    required this.version,
+    required this.date,
+    required this.changes,
+  });
+}
+
+/// Changelog estático, mantido manualmente a cada mudança relevante.
+const List<ChangelogEntry> changelogEntries = [
+  ChangelogEntry(
+    version: '1.0.0',
+    date: '2026-07-05',
+    changes: [
+      'Primeira versão de teste do Orizon.',
+      'Busca por tags com autocomplete e chips, modo multi-booru.',
+      'Favoritos, histórico de downloads, viewer com zoom e vídeo.',
+      'Toggle de conteúdo adulto (desligado por padrão) e blacklist de tags.',
+      '4 temas de cor, tipografia própria e suporte a 10 idiomas.',
+      'Aviso automático ao tentar buscar conteúdo da blacklist-base fixa.',
+    ],
+  ),
+];
