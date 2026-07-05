@@ -134,6 +134,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settingsAbout => 'À propos';
 
   @override
+  String get settingsBackupTitle => 'Sauvegarde';
+
+  @override
+  String get settingsBackupExport => 'Exporter la sauvegarde';
+
+  @override
+  String get settingsBackupImport => 'Restaurer la sauvegarde';
+
+  @override
+  String get settingsBackupImportSuccess => 'Sauvegarde restaurée';
+
+  @override
+  String settingsBackupImportError(String error) {
+    return 'Erreur lors de la restauration : $error';
+  }
+
+  @override
+  String get settingsCacheTitle => 'Cache';
+
+  @override
+  String get settingsCacheClearNow => 'Vider le cache maintenant';
+
+  @override
+  String get settingsCacheCleared => 'Cache vidé';
+
+  @override
+  String get settingsCacheAutoClear =>
+      'Vider le cache automatiquement à la fermeture';
+
+  @override
+  String get settingsCacheAutoClearSubtitle =>
+      'Désactivé par défaut. Si activé, le cache d\'images est vidé à chaque fermeture de l\'application.';
+
+  @override
   String get themeWhiteRed => 'Blanc + rouge';
 
   @override

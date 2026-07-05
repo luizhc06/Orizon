@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,13 +31,31 @@ class OrizonApp extends ConsumerStatefulWidget {
   ConsumerState<OrizonApp> createState() => _OrizonAppState();
 }
 
-class _OrizonAppState extends ConsumerState<OrizonApp> {
+class _OrizonAppState extends ConsumerState<OrizonApp>
+    with WidgetsBindingObserver {
   bool _seeding = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _seed();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      if (ref.read(autoClearCacheProvider)) {
+        DefaultCacheManager().emptyCache();
+      }
+    }
   }
 
   Future<void> _seed() async {

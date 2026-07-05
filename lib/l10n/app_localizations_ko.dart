@@ -133,6 +133,39 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsAbout => '정보';
 
   @override
+  String get settingsBackupTitle => '백업';
+
+  @override
+  String get settingsBackupExport => '백업 내보내기';
+
+  @override
+  String get settingsBackupImport => '백업 복원';
+
+  @override
+  String get settingsBackupImportSuccess => '백업이 복원되었습니다';
+
+  @override
+  String settingsBackupImportError(String error) {
+    return '복원 오류: $error';
+  }
+
+  @override
+  String get settingsCacheTitle => '캐시';
+
+  @override
+  String get settingsCacheClearNow => '지금 캐시 지우기';
+
+  @override
+  String get settingsCacheCleared => '캐시가 삭제되었습니다';
+
+  @override
+  String get settingsCacheAutoClear => '종료 시 캐시 자동 삭제';
+
+  @override
+  String get settingsCacheAutoClearSubtitle =>
+      '기본적으로 꺼져 있습니다. 켜면 앱을 닫을 때마다 이미지 캐시가 삭제됩니다.';
+
+  @override
   String get themeWhiteRed => '화이트 + 레드';
 
   @override

@@ -48,6 +48,19 @@
   "settingsDiscordSubtitle": "Orizon's Brazilian community 🇧🇷",
   "settingsSupport": "Buy me a coffee",
   "settingsAbout": "About",
+  "settingsBackupTitle": "Backup",
+  "settingsBackupExport": "Export backup",
+  "settingsBackupImport": "Restore backup",
+  "settingsBackupImportSuccess": "Backup restored",
+  "settingsBackupImportError": "Error restoring backup: {error}",
+  "@settingsBackupImportError": {
+    "placeholders": { "error": { "type": "String" } }
+  },
+  "settingsCacheTitle": "Cache",
+  "settingsCacheClearNow": "Clear cache now",
+  "settingsCacheCleared": "Cache cleared",
+  "settingsCacheAutoClear": "Clear cache automatically on close",
+  "settingsCacheAutoClearSubtitle": "Off by default. When on, cached images are cleared every time you close the app.",
 
   "themeWhiteRed": "White + red",
   "themeWhitePurple": "White + purple",

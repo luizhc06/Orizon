@@ -1,17 +1,60 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/providers.dart';
 import '../../core/theme.dart';
 import '../../l10n/app_localizations.dart';
 import '../favorites/download_history_screen.dart';
 import '../sources/sources_screen.dart';
 import 'about_screen.dart';
+import 'backup_service.dart';
 import 'blacklist_screen.dart';
 import 'settings_providers.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
+
+  Future<void> _exportBackup(WidgetRef ref) async {
+    final service = BackupService(ref.read(appDatabaseProvider));
+    await service.shareBackup();
+  }
+
+  Future<void> _importBackup(BuildContext context, WidgetRef ref) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+      final path = result?.files.single.path;
+      if (path == null) return;
+
+      final service = BackupService(ref.read(appDatabaseProvider));
+      await service.importFromFile(File(path));
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.settingsBackupImportSuccess)),
+      );
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.settingsBackupImportError(e.toString()))),
+      );
+    }
+  }
+
+  Future<void> _clearCache(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    await DefaultCacheManager().emptyCache();
+    messenger.showSnackBar(
+      SnackBar(content: Text(l10n.settingsCacheCleared)),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,6 +66,7 @@ class SettingsScreen extends ConsumerWidget {
     final hideAiGenerated = ref.watch(hideAiGeneratedProvider);
     final themePreset = ref.watch(themePresetProvider);
     final locale = ref.watch(appLocaleProvider);
+    final autoClearCache = ref.watch(autoClearCacheProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.settingsTitle)),
@@ -184,6 +228,45 @@ class SettingsScreen extends ConsumerWidget {
               onChanged: (value) =>
                   ref.read(appLocaleProvider.notifier).set(value),
             ),
+          ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: Text(
+              l10n.settingsBackupTitle,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.upload_outlined),
+            title: Text(l10n.settingsBackupExport),
+            onTap: () => _exportBackup(ref),
+          ),
+          ListTile(
+            leading: const Icon(Icons.download_outlined),
+            title: Text(l10n.settingsBackupImport),
+            onTap: () => _importBackup(context, ref),
+          ),
+          const Divider(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            child: Text(
+              l10n.settingsCacheTitle,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.cleaning_services_outlined),
+            title: Text(l10n.settingsCacheClearNow),
+            onTap: () => _clearCache(context),
+          ),
+          SwitchListTile(
+            secondary: const Icon(Icons.auto_delete_outlined),
+            title: Text(l10n.settingsCacheAutoClear),
+            subtitle: Text(l10n.settingsCacheAutoClearSubtitle),
+            value: autoClearCache,
+            onChanged: (value) =>
+                ref.read(autoClearCacheProvider.notifier).set(value),
           ),
           const Divider(),
           ListTile(

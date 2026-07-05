@@ -10,6 +10,7 @@ const _onboardingDoneKey = 'settings.onboardingDone';
 const _showAdultContentKey = 'settings.showAdultContent';
 const _multiBooruKey = 'settings.multiBooru';
 const _hideAiGeneratedKey = 'settings.hideAiGenerated';
+const _autoClearCacheKey = 'settings.autoClearCache';
 
 enum GridMode { masonry, uniform }
 
@@ -181,6 +182,25 @@ class HideAiGeneratedNotifier extends Notifier<bool> {
 
 final hideAiGeneratedProvider = NotifierProvider<HideAiGeneratedNotifier, bool>(
   HideAiGeneratedNotifier.new,
+);
+
+/// Limpa o cache de imagens automaticamente quando o app é fechado.
+/// Desligado por padrão (mantém o cache entre sessões, mais rápido).
+class AutoClearCacheNotifier extends Notifier<bool> {
+  @override
+  bool build() {
+    return ref.read(sharedPreferencesProvider).getBool(_autoClearCacheKey) ??
+        false;
+  }
+
+  void set(bool value) {
+    state = value;
+    ref.read(sharedPreferencesProvider).setBool(_autoClearCacheKey, value);
+  }
+}
+
+final autoClearCacheProvider = NotifierProvider<AutoClearCacheNotifier, bool>(
+  AutoClearCacheNotifier.new,
 );
 
 bool isOnboardingDone(SharedPreferences prefs) =>

@@ -342,6 +342,66 @@ abstract class AppLocalizations {
   /// **'About'**
   String get settingsAbout;
 
+  /// No description provided for @settingsBackupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup'**
+  String get settingsBackupTitle;
+
+  /// No description provided for @settingsBackupExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get settingsBackupExport;
+
+  /// No description provided for @settingsBackupImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore backup'**
+  String get settingsBackupImport;
+
+  /// No description provided for @settingsBackupImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup restored'**
+  String get settingsBackupImportSuccess;
+
+  /// No description provided for @settingsBackupImportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error restoring backup: {error}'**
+  String settingsBackupImportError(String error);
+
+  /// No description provided for @settingsCacheTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache'**
+  String get settingsCacheTitle;
+
+  /// No description provided for @settingsCacheClearNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache now'**
+  String get settingsCacheClearNow;
+
+  /// No description provided for @settingsCacheCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache cleared'**
+  String get settingsCacheCleared;
+
+  /// No description provided for @settingsCacheAutoClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear cache automatically on close'**
+  String get settingsCacheAutoClear;
+
+  /// No description provided for @settingsCacheAutoClearSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Off by default. When on, cached images are cleared every time you close the app.'**
+  String get settingsCacheAutoClearSubtitle;
+
   /// No description provided for @themeWhiteRed.
   ///
   /// In en, this message translates to:

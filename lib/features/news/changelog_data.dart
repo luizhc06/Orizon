@@ -13,6 +13,18 @@ class ChangelogEntry {
 /// Changelog estático, mantido manualmente a cada mudança relevante.
 const List<ChangelogEntry> changelogEntries = [
   ChangelogEntry(
+    version: '1.0.1',
+    date: '2026-07-05',
+    changes: [
+      'Corrigido: build de release não tinha permissão de internet, então a '
+          'busca falhava em dispositivos reais (funcionava só em modo debug).',
+      'Adicionado: backup e restauração de fontes, favoritos, blacklist e '
+          'configurações.',
+      'Adicionado: opções de cache (limpar agora, ou automaticamente ao '
+          'fechar o app).',
+    ],
+  ),
+  ChangelogEntry(
     version: '1.0.0',
     date: '2026-07-05',
     changes: [

@@ -130,6 +130,38 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settingsAbout => '关于';
 
   @override
+  String get settingsBackupTitle => '备份';
+
+  @override
+  String get settingsBackupExport => '导出备份';
+
+  @override
+  String get settingsBackupImport => '恢复备份';
+
+  @override
+  String get settingsBackupImportSuccess => '备份已恢复';
+
+  @override
+  String settingsBackupImportError(String error) {
+    return '恢复出错：$error';
+  }
+
+  @override
+  String get settingsCacheTitle => '缓存';
+
+  @override
+  String get settingsCacheClearNow => '立即清除缓存';
+
+  @override
+  String get settingsCacheCleared => '缓存已清除';
+
+  @override
+  String get settingsCacheAutoClear => '关闭时自动清除缓存';
+
+  @override
+  String get settingsCacheAutoClearSubtitle => '默认关闭。开启后，每次关闭应用时都会清除图片缓存。';
+
+  @override
   String get themeWhiteRed => '白色 + 红色';
 
   @override

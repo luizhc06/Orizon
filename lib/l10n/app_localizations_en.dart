@@ -134,6 +134,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAbout => 'About';
 
   @override
+  String get settingsBackupTitle => 'Backup';
+
+  @override
+  String get settingsBackupExport => 'Export backup';
+
+  @override
+  String get settingsBackupImport => 'Restore backup';
+
+  @override
+  String get settingsBackupImportSuccess => 'Backup restored';
+
+  @override
+  String settingsBackupImportError(String error) {
+    return 'Error restoring backup: $error';
+  }
+
+  @override
+  String get settingsCacheTitle => 'Cache';
+
+  @override
+  String get settingsCacheClearNow => 'Clear cache now';
+
+  @override
+  String get settingsCacheCleared => 'Cache cleared';
+
+  @override
+  String get settingsCacheAutoClear => 'Clear cache automatically on close';
+
+  @override
+  String get settingsCacheAutoClearSubtitle =>
+      'Off by default. When on, cached images are cleared every time you close the app.';
+
+  @override
   String get themeWhiteRed => 'White + red';
 
   @override

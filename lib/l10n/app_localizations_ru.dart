@@ -134,6 +134,39 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsAbout => 'О приложении';
 
   @override
+  String get settingsBackupTitle => 'Резервная копия';
+
+  @override
+  String get settingsBackupExport => 'Экспортировать резервную копию';
+
+  @override
+  String get settingsBackupImport => 'Восстановить из резервной копии';
+
+  @override
+  String get settingsBackupImportSuccess => 'Резервная копия восстановлена';
+
+  @override
+  String settingsBackupImportError(String error) {
+    return 'Ошибка восстановления: $error';
+  }
+
+  @override
+  String get settingsCacheTitle => 'Кэш';
+
+  @override
+  String get settingsCacheClearNow => 'Очистить кэш сейчас';
+
+  @override
+  String get settingsCacheCleared => 'Кэш очищен';
+
+  @override
+  String get settingsCacheAutoClear => 'Автоматически очищать кэш при закрытии';
+
+  @override
+  String get settingsCacheAutoClearSubtitle =>
+      'По умолчанию выключено. Если включено, кэш изображений очищается при каждом закрытии приложения.';
+
+  @override
   String get themeWhiteRed => 'Белый + красный';
 
   @override

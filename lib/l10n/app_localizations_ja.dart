@@ -133,6 +133,39 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settingsAbout => 'アプリについて';
 
   @override
+  String get settingsBackupTitle => 'バックアップ';
+
+  @override
+  String get settingsBackupExport => 'バックアップを書き出す';
+
+  @override
+  String get settingsBackupImport => 'バックアップを復元する';
+
+  @override
+  String get settingsBackupImportSuccess => 'バックアップを復元しました';
+
+  @override
+  String settingsBackupImportError(String error) {
+    return '復元エラー: $error';
+  }
+
+  @override
+  String get settingsCacheTitle => 'キャッシュ';
+
+  @override
+  String get settingsCacheClearNow => '今すぐキャッシュを削除';
+
+  @override
+  String get settingsCacheCleared => 'キャッシュを削除しました';
+
+  @override
+  String get settingsCacheAutoClear => '終了時に自動でキャッシュを削除';
+
+  @override
+  String get settingsCacheAutoClearSubtitle =>
+      'デフォルトでオフです。オンにすると、アプリを閉じるたびに画像キャッシュが削除されます。';
+
+  @override
   String get themeWhiteRed => '白 + 赤';
 
   @override
