@@ -15,6 +15,7 @@ import '../../l10n/app_localizations.dart';
 import '../settings/settings_providers.dart';
 import '../sources/sources_providers.dart';
 import '../viewer/viewer_screen.dart';
+import 'search_providers.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
@@ -27,7 +28,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   final _tagInputController = TextEditingController();
   final _scrollController = ScrollController();
   final List<Post> _posts = [];
-  final List<String> _activeTags = [];
   List<String> _suggestions = [];
   Timer? _debounce;
   int _page = 1;
@@ -98,12 +98,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       return;
     }
 
+    final current = ref.read(activeSearchTagsProvider);
+    if (!current.contains(tag)) {
+      ref.read(activeSearchTagsProvider.notifier).state = [...current, tag];
+    }
     setState(() {
-      if (!_activeTags.contains(tag)) _activeTags.add(tag);
       _tagInputController.clear();
       _suggestions = [];
     });
-    _runSearch();
   }
 
   void _showShameWarning() {
@@ -125,8 +127,126 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _removeTag(String tag) {
-    setState(() => _activeTags.remove(tag));
-    _runSearch();
+    final current = ref.read(activeSearchTagsProvider);
+    ref.read(activeSearchTagsProvider.notifier).state = current
+        .where((t) => t != tag)
+        .toList();
+  }
+
+  void _showSavedSearches(List<String> currentTags) {
+    final l10n = AppLocalizations.of(context)!;
+    final db = ref.read(appDatabaseProvider);
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => DraggableScrollableSheet(
+        initialChildSize: 0.5,
+        minChildSize: 0.25,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (sheetContext, scrollController) {
+          return StreamBuilder<List<SavedSearch>>(
+            stream: db.watchSavedSearches(),
+            builder: (context, snapshot) {
+              final saved = snapshot.data ?? const <SavedSearch>[];
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            l10n.savedSearchesTitle,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed: currentTags.isEmpty
+                              ? null
+                              : () => _saveCurrentSearch(currentTags),
+                          icon: const Icon(Icons.add),
+                          label: Text(l10n.savedSearchesSaveButton),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  Expanded(
+                    child: saved.isEmpty
+                        ? Center(child: Text(l10n.savedSearchesEmpty))
+                        : ListView.builder(
+                            controller: scrollController,
+                            itemCount: saved.length,
+                            itemBuilder: (context, index) {
+                              final entry = saved[index];
+                              final tags = entry.tags.isEmpty
+                                  ? const <String>[]
+                                  : entry.tags.split(' ');
+                              return ListTile(
+                                title: Text(entry.name),
+                                subtitle: Text(tags.join(', ')),
+                                onTap: () {
+                                  ref
+                                          .read(
+                                            activeSearchTagsProvider.notifier,
+                                          )
+                                          .state =
+                                      tags;
+                                  Navigator.of(sheetContext).pop();
+                                },
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete_outline),
+                                  tooltip: l10n.savedSearchesDeleteTooltip,
+                                  onPressed: () =>
+                                      db.deleteSavedSearch(entry.id),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _saveCurrentSearch(List<String> tags) async {
+    final l10n = AppLocalizations.of(context)!;
+    final nameController = TextEditingController(text: tags.join(' '));
+    final name = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.savedSearchesDialogTitle),
+        content: TextField(
+          controller: nameController,
+          autofocus: true,
+          decoration: InputDecoration(hintText: l10n.savedSearchesDialogHint),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(l10n.savedSearchesDialogCancel),
+          ),
+          TextButton(
+            onPressed: () =>
+                Navigator.of(dialogContext).pop(nameController.text.trim()),
+            child: Text(l10n.savedSearchesDialogSave),
+          ),
+        ],
+      ),
+    );
+    nameController.dispose();
+    if (name == null || name.isEmpty) return;
+    await ref.read(appDatabaseProvider).addSavedSearch(name, tags);
+    if (mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.savedSearchesSaved)));
+    }
   }
 
   Future<void> _runSearch() async {
@@ -153,7 +273,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   Future<void> _loadMore() async {
-    if (_activeTags.isEmpty) return;
+    if (ref.read(activeSearchTagsProvider).isEmpty) return;
     final safeModeOnly = !ref.read(showAdultContentProvider);
     final hideAiGenerated = ref.read(hideAiGeneratedProvider);
     final multiBooru = ref.read(multiBooruProvider);
@@ -183,7 +303,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     try {
       final results = await repo.search(
         source.toConfig(),
-        tags: _activeTags,
+        tags: ref.read(activeSearchTagsProvider),
         page: _page,
         safeModeOnly: safeModeOnly,
         hideAiGenerated: hideAiGenerated,
@@ -230,7 +350,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     try {
       final resultsMap = await repo.searchMultiple(
         enabledSources.map((s) => s.toConfig()).toList(),
-        tags: _activeTags,
+        tags: ref.read(activeSearchTagsProvider),
         pages: _pagesBySource,
         safeModeOnly: safeModeOnly,
         hideAiGenerated: hideAiGenerated,
@@ -265,21 +385,31 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final sourcesAsync = ref.watch(sourcesStreamProvider);
+    final activeTags = ref.watch(activeSearchTagsProvider);
+    ref.listen<List<String>>(
+      activeSearchTagsProvider,
+      (previous, next) => _runSearch(),
+    );
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Orizon'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.bookmark_border),
+            tooltip: l10n.savedSearchesTitle,
+            onPressed: () => _showSavedSearches(activeTags),
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh),
             tooltip: l10n.searchRefreshTooltip,
-            onPressed: _activeTags.isEmpty ? null : _runSearch,
+            onPressed: activeTags.isEmpty ? null : _runSearch,
           ),
         ],
       ),
       body: Column(
         children: [
-          _buildTagInputBar(),
+          _buildTagInputBar(activeTags),
           sourcesAsync.when(
             data: (sources) => _SourcePickerBar(sources: sources),
             loading: () => const SizedBox.shrink(),
@@ -292,7 +422,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
-  Widget _buildTagInputBar() {
+  Widget _buildTagInputBar(List<String> activeTags) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
@@ -312,7 +442,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 const Icon(Icons.search, size: 18),
-                ..._activeTags.map(
+                ...activeTags.map(
                   (tag) => Chip(
                     label: Text(tag),
                     visualDensity: VisualDensity.compact,

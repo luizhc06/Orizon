@@ -109,5 +109,18 @@
   "viewerOpenBrowser": "브라우저에서 열기",
   "viewerPermissionDenied": "갤러리 접근 권한이 거부되었습니다",
   "viewerSaved": "갤러리에 저장되었습니다",
-  "viewerDownloadError": "다운로드 오류: {error}"
+  "viewerDownloadError": "다운로드 오류: {error}",
+  "viewerTagSearchTooltip": "이 태그만으로 검색",
+  "viewerTagAddTooltip": "현재 검색에 추가",
+  "viewerTagAdded": "\"{tag}\"이(가) 현재 검색에 추가되었습니다",
+
+  "savedSearchesTitle": "저장된 검색",
+  "savedSearchesEmpty": "아직 저장된 검색이 없습니다",
+  "savedSearchesSaveButton": "현재 검색 저장",
+  "savedSearchesDialogTitle": "검색 저장",
+  "savedSearchesDialogHint": "검색 이름",
+  "savedSearchesDialogSave": "저장",
+  "savedSearchesDialogCancel": "취소",
+  "savedSearchesSaved": "검색이 저장되었습니다",
+  "savedSearchesDeleteTooltip": "삭제"
 }

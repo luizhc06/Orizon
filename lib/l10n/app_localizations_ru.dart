@@ -323,4 +323,42 @@ class AppLocalizationsRu extends AppLocalizations {
   String viewerDownloadError(String error) {
     return 'Ошибка загрузки: $error';
   }
+
+  @override
+  String get viewerTagSearchTooltip => 'Искать только по этому тегу';
+
+  @override
+  String get viewerTagAddTooltip => 'Добавить к текущему поиску';
+
+  @override
+  String viewerTagAdded(String tag) {
+    return '«$tag» добавлен к текущему поиску';
+  }
+
+  @override
+  String get savedSearchesTitle => 'Сохранённые поиски';
+
+  @override
+  String get savedSearchesEmpty => 'Пока нет сохранённых поисков';
+
+  @override
+  String get savedSearchesSaveButton => 'Сохранить текущий';
+
+  @override
+  String get savedSearchesDialogTitle => 'Сохранить поиск';
+
+  @override
+  String get savedSearchesDialogHint => 'Название поиска';
+
+  @override
+  String get savedSearchesDialogSave => 'Сохранить';
+
+  @override
+  String get savedSearchesDialogCancel => 'Отмена';
+
+  @override
+  String get savedSearchesSaved => 'Поиск сохранён';
+
+  @override
+  String get savedSearchesDeleteTooltip => 'Удалить';
 }

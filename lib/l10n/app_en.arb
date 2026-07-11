@@ -130,5 +130,21 @@
   "viewerDownloadError": "Download error: {error}",
   "@viewerDownloadError": {
     "placeholders": { "error": { "type": "String" } }
-  }
+  },
+  "viewerTagSearchTooltip": "Search only this tag",
+  "viewerTagAddTooltip": "Add to current search",
+  "viewerTagAdded": "\"{tag}\" added to the current search",
+  "@viewerTagAdded": {
+    "placeholders": { "tag": { "type": "String" } }
+  },
+
+  "savedSearchesTitle": "Saved searches",
+  "savedSearchesEmpty": "No saved searches yet",
+  "savedSearchesSaveButton": "Save current",
+  "savedSearchesDialogTitle": "Save search",
+  "savedSearchesDialogHint": "Search name",
+  "savedSearchesDialogSave": "Save",
+  "savedSearchesDialogCancel": "Cancel",
+  "savedSearchesSaved": "Search saved",
+  "savedSearchesDeleteTooltip": "Delete"
 }

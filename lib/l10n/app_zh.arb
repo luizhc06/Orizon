@@ -109,5 +109,18 @@
   "viewerOpenBrowser": "在浏览器中打开",
   "viewerPermissionDenied": "相册权限被拒绝",
   "viewerSaved": "已保存到相册",
-  "viewerDownloadError": "下载出错：{error}"
+  "viewerDownloadError": "下载出错：{error}",
+  "viewerTagSearchTooltip": "只搜索这个标签",
+  "viewerTagAddTooltip": "添加到当前搜索",
+  "viewerTagAdded": "已将“{tag}”添加到当前搜索",
+
+  "savedSearchesTitle": "已保存的搜索",
+  "savedSearchesEmpty": "还没有保存的搜索",
+  "savedSearchesSaveButton": "保存当前搜索",
+  "savedSearchesDialogTitle": "保存搜索",
+  "savedSearchesDialogHint": "搜索名称",
+  "savedSearchesDialogSave": "保存",
+  "savedSearchesDialogCancel": "取消",
+  "savedSearchesSaved": "搜索已保存",
+  "savedSearchesDeleteTooltip": "删除"
 }

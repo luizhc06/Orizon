@@ -324,4 +324,43 @@ class AppLocalizationsFr extends AppLocalizations {
   String viewerDownloadError(String error) {
     return 'Erreur de téléchargement : $error';
   }
+
+  @override
+  String get viewerTagSearchTooltip => 'Rechercher uniquement ce tag';
+
+  @override
+  String get viewerTagAddTooltip => 'Ajouter à la recherche actuelle';
+
+  @override
+  String viewerTagAdded(String tag) {
+    return '« $tag » ajouté à la recherche actuelle';
+  }
+
+  @override
+  String get savedSearchesTitle => 'Recherches enregistrées';
+
+  @override
+  String get savedSearchesEmpty =>
+      'Aucune recherche enregistrée pour l\'instant';
+
+  @override
+  String get savedSearchesSaveButton => 'Enregistrer l\'actuelle';
+
+  @override
+  String get savedSearchesDialogTitle => 'Enregistrer la recherche';
+
+  @override
+  String get savedSearchesDialogHint => 'Nom de la recherche';
+
+  @override
+  String get savedSearchesDialogSave => 'Enregistrer';
+
+  @override
+  String get savedSearchesDialogCancel => 'Annuler';
+
+  @override
+  String get savedSearchesSaved => 'Recherche enregistrée';
+
+  @override
+  String get savedSearchesDeleteTooltip => 'Supprimer';
 }

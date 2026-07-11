@@ -47,14 +47,36 @@ class DownloadHistoryEntries extends Table {
   DateTimeColumn get downloadedAt => dateTime().withDefault(currentDateAndTime)();
 }
 
+@DataClassName('SavedSearch')
+class SavedSearches extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get name => text()();
+  TextColumn get tags => text()(); // tags separadas por espaço
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+}
+
 @DriftDatabase(
-  tables: [Sources, Favorites, TagBlacklistEntries, DownloadHistoryEntries],
+  tables: [
+    Sources,
+    Favorites,
+    TagBlacklistEntries,
+    DownloadHistoryEntries,
+    SavedSearches,
+  ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) await m.createTable(savedSearches);
+    },
+  );
 
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'orizon_db');
@@ -118,4 +140,18 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> addDownloadRecord(DownloadHistoryEntriesCompanion entry) =>
       into(downloadHistoryEntries).insert(entry);
+
+  // --- Buscas salvas (sessões de tags) ---
+
+  Stream<List<SavedSearch>> watchSavedSearches() =>
+      (select(savedSearches)
+            ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+          .watch();
+
+  Future<void> addSavedSearch(String name, List<String> tags) => into(
+    savedSearches,
+  ).insert(SavedSearchesCompanion.insert(name: name, tags: tags.join(' ')));
+
+  Future<void> deleteSavedSearch(int id) =>
+      (delete(savedSearches)..where((t) => t.id.equals(id))).go();
 }
