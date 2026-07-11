@@ -695,6 +695,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download error: {error}'**
   String viewerDownloadError(String error);
+
+  /// No description provided for @viewerTagSearchTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Search only this tag'**
+  String get viewerTagSearchTooltip;
+
+  /// No description provided for @viewerTagAddTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to current search'**
+  String get viewerTagAddTooltip;
+
+  /// No description provided for @viewerTagAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{tag}\" added to the current search'**
+  String viewerTagAdded(String tag);
+
+  /// No description provided for @savedSearchesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved searches'**
+  String get savedSearchesTitle;
+
+  /// No description provided for @savedSearchesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved searches yet'**
+  String get savedSearchesEmpty;
+
+  /// No description provided for @savedSearchesSaveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save current'**
+  String get savedSearchesSaveButton;
+
+  /// No description provided for @savedSearchesDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save search'**
+  String get savedSearchesDialogTitle;
+
+  /// No description provided for @savedSearchesDialogHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search name'**
+  String get savedSearchesDialogHint;
+
+  /// No description provided for @savedSearchesDialogSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get savedSearchesDialogSave;
+
+  /// No description provided for @savedSearchesDialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get savedSearchesDialogCancel;
+
+  /// No description provided for @savedSearchesSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Search saved'**
+  String get savedSearchesSaved;
+
+  /// No description provided for @savedSearchesDeleteTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get savedSearchesDeleteTooltip;
 }
 
 class _AppLocalizationsDelegate

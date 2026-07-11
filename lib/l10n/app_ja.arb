@@ -109,5 +109,18 @@
   "viewerOpenBrowser": "ブラウザで開く",
   "viewerPermissionDenied": "ギャラリーへのアクセスが拒否されました",
   "viewerSaved": "ギャラリーに保存しました",
-  "viewerDownloadError": "ダウンロードエラー: {error}"
+  "viewerDownloadError": "ダウンロードエラー: {error}",
+  "viewerTagSearchTooltip": "このタグだけで検索",
+  "viewerTagAddTooltip": "現在の検索に追加",
+  "viewerTagAdded": "「{tag}」を現在の検索に追加しました",
+
+  "savedSearchesTitle": "保存した検索",
+  "savedSearchesEmpty": "まだ保存された検索がありません",
+  "savedSearchesSaveButton": "現在の検索を保存",
+  "savedSearchesDialogTitle": "検索を保存",
+  "savedSearchesDialogHint": "検索名",
+  "savedSearchesDialogSave": "保存",
+  "savedSearchesDialogCancel": "キャンセル",
+  "savedSearchesSaved": "検索を保存しました",
+  "savedSearchesDeleteTooltip": "削除"
 }

@@ -109,5 +109,18 @@
   "viewerOpenBrowser": "Открыть в браузере",
   "viewerPermissionDenied": "Доступ к галерее запрещён",
   "viewerSaved": "Сохранено в галерею",
-  "viewerDownloadError": "Ошибка загрузки: {error}"
+  "viewerDownloadError": "Ошибка загрузки: {error}",
+  "viewerTagSearchTooltip": "Искать только по этому тегу",
+  "viewerTagAddTooltip": "Добавить к текущему поиску",
+  "viewerTagAdded": "«{tag}» добавлен к текущему поиску",
+
+  "savedSearchesTitle": "Сохранённые поиски",
+  "savedSearchesEmpty": "Пока нет сохранённых поисков",
+  "savedSearchesSaveButton": "Сохранить текущий",
+  "savedSearchesDialogTitle": "Сохранить поиск",
+  "savedSearchesDialogHint": "Название поиска",
+  "savedSearchesDialogSave": "Сохранить",
+  "savedSearchesDialogCancel": "Отмена",
+  "savedSearchesSaved": "Поиск сохранён",
+  "savedSearchesDeleteTooltip": "Удалить"
 }

@@ -320,4 +320,42 @@ class AppLocalizationsJa extends AppLocalizations {
   String viewerDownloadError(String error) {
     return 'ダウンロードエラー: $error';
   }
+
+  @override
+  String get viewerTagSearchTooltip => 'このタグだけで検索';
+
+  @override
+  String get viewerTagAddTooltip => '現在の検索に追加';
+
+  @override
+  String viewerTagAdded(String tag) {
+    return '「$tag」を現在の検索に追加しました';
+  }
+
+  @override
+  String get savedSearchesTitle => '保存した検索';
+
+  @override
+  String get savedSearchesEmpty => 'まだ保存された検索がありません';
+
+  @override
+  String get savedSearchesSaveButton => '現在の検索を保存';
+
+  @override
+  String get savedSearchesDialogTitle => '検索を保存';
+
+  @override
+  String get savedSearchesDialogHint => '検索名';
+
+  @override
+  String get savedSearchesDialogSave => '保存';
+
+  @override
+  String get savedSearchesDialogCancel => 'キャンセル';
+
+  @override
+  String get savedSearchesSaved => '検索を保存しました';
+
+  @override
+  String get savedSearchesDeleteTooltip => '削除';
 }

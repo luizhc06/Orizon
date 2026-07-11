@@ -13,6 +13,29 @@ class ChangelogEntry {
 /// Changelog estático, mantido manualmente a cada mudança relevante.
 const List<ChangelogEntry> changelogEntries = [
   ChangelogEntry(
+    version: '1.0.4',
+    date: '2026-07-11',
+    changes: [
+      'Adicionado: buscas salvas — dá pra salvar a combinação de tags atual '
+          'com um nome e recarregar depois (ícone de marcador na busca).',
+      'Adicionado: tocar em uma tag na lista do viewer abre uma busca nova '
+          'só com aquela tag; o ícone de "+" no canto adiciona a tag à '
+          'busca que já está ativa, sem sair do viewer.',
+    ],
+  ),
+  ChangelogEntry(
+    version: '1.0.3',
+    date: '2026-07-11',
+    changes: [
+      'Adicionado: toque duplo na imagem agora dá zoom (além do pinça já '
+          'existente).',
+      'Adicionado: avançar e voltar 10 segundos no vídeo, e um controle de '
+          'volume de verdade (não só mudo).',
+      'Corrigido: lista de tags no viewer cortava as últimas quando o post '
+          'tinha muitas — agora rola até o fim.',
+    ],
+  ),
+  ChangelogEntry(
     version: '1.0.2',
     date: '2026-07-05',
     changes: [

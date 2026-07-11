@@ -315,4 +315,42 @@ class AppLocalizationsZh extends AppLocalizations {
   String viewerDownloadError(String error) {
     return '下载出错：$error';
   }
+
+  @override
+  String get viewerTagSearchTooltip => '只搜索这个标签';
+
+  @override
+  String get viewerTagAddTooltip => '添加到当前搜索';
+
+  @override
+  String viewerTagAdded(String tag) {
+    return '已将“$tag”添加到当前搜索';
+  }
+
+  @override
+  String get savedSearchesTitle => '已保存的搜索';
+
+  @override
+  String get savedSearchesEmpty => '还没有保存的搜索';
+
+  @override
+  String get savedSearchesSaveButton => '保存当前搜索';
+
+  @override
+  String get savedSearchesDialogTitle => '保存搜索';
+
+  @override
+  String get savedSearchesDialogHint => '搜索名称';
+
+  @override
+  String get savedSearchesDialogSave => '保存';
+
+  @override
+  String get savedSearchesDialogCancel => '取消';
+
+  @override
+  String get savedSearchesSaved => '搜索已保存';
+
+  @override
+  String get savedSearchesDeleteTooltip => '删除';
 }

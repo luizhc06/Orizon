@@ -323,4 +323,42 @@ class AppLocalizationsIt extends AppLocalizations {
   String viewerDownloadError(String error) {
     return 'Errore durante il download: $error';
   }
+
+  @override
+  String get viewerTagSearchTooltip => 'Cerca solo questo tag';
+
+  @override
+  String get viewerTagAddTooltip => 'Aggiungi alla ricerca attuale';
+
+  @override
+  String viewerTagAdded(String tag) {
+    return '\"$tag\" aggiunto alla ricerca attuale';
+  }
+
+  @override
+  String get savedSearchesTitle => 'Ricerche salvate';
+
+  @override
+  String get savedSearchesEmpty => 'Ancora nessuna ricerca salvata';
+
+  @override
+  String get savedSearchesSaveButton => 'Salva attuale';
+
+  @override
+  String get savedSearchesDialogTitle => 'Salva ricerca';
+
+  @override
+  String get savedSearchesDialogHint => 'Nome della ricerca';
+
+  @override
+  String get savedSearchesDialogSave => 'Salva';
+
+  @override
+  String get savedSearchesDialogCancel => 'Annulla';
+
+  @override
+  String get savedSearchesSaved => 'Ricerca salvata';
+
+  @override
+  String get savedSearchesDeleteTooltip => 'Elimina';
 }

@@ -320,4 +320,42 @@ class AppLocalizationsKo extends AppLocalizations {
   String viewerDownloadError(String error) {
     return '다운로드 오류: $error';
   }
+
+  @override
+  String get viewerTagSearchTooltip => '이 태그만으로 검색';
+
+  @override
+  String get viewerTagAddTooltip => '현재 검색에 추가';
+
+  @override
+  String viewerTagAdded(String tag) {
+    return '\"$tag\"이(가) 현재 검색에 추가되었습니다';
+  }
+
+  @override
+  String get savedSearchesTitle => '저장된 검색';
+
+  @override
+  String get savedSearchesEmpty => '아직 저장된 검색이 없습니다';
+
+  @override
+  String get savedSearchesSaveButton => '현재 검색 저장';
+
+  @override
+  String get savedSearchesDialogTitle => '검색 저장';
+
+  @override
+  String get savedSearchesDialogHint => '검색 이름';
+
+  @override
+  String get savedSearchesDialogSave => '저장';
+
+  @override
+  String get savedSearchesDialogCancel => '취소';
+
+  @override
+  String get savedSearchesSaved => '검색이 저장되었습니다';
+
+  @override
+  String get savedSearchesDeleteTooltip => '삭제';
 }

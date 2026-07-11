@@ -7,6 +7,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gal/gal.dart';
+import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
@@ -16,6 +17,7 @@ import '../../data/booru/models/post.dart';
 import '../../data/db/database.dart';
 import '../../data/db/mappers.dart';
 import '../../l10n/app_localizations.dart';
+import '../search/search_providers.dart';
 
 class ViewerScreen extends ConsumerStatefulWidget {
   final List<Post> posts;
@@ -99,8 +101,18 @@ class _PostPage extends StatelessWidget {
       initGestureConfigHandler: (state) => GestureConfig(
         minScale: 1,
         maxScale: 5,
+        animationMinScale: 0.7,
+        animationMaxScale: 6,
         inPageView: true,
       ),
+      onDoubleTap: (state) {
+        final currentScale = state.gestureDetails?.totalScale ?? 1.0;
+        final targetScale = currentScale > 1.1 ? 1.0 : 3.0;
+        state.handleDoubleTap(
+          scale: targetScale,
+          doubleTapPosition: state.pointerDownPosition,
+        );
+      },
     );
   }
 }
@@ -172,6 +184,17 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
     _scheduleHide();
   }
 
+  void _seekRelative(Duration offset) {
+    final duration = _controller.value.duration;
+    final target = _controller.value.position + offset;
+    _controller.seekTo(
+      target < Duration.zero
+          ? Duration.zero
+          : (target > duration ? duration : target),
+    );
+    _scheduleHide();
+  }
+
   static String _formatDuration(Duration d) {
     final minutes = d.inMinutes;
     final seconds = (d.inSeconds % 60).toString().padLeft(2, '0');
@@ -211,15 +234,34 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      IconButton(
-                        iconSize: 64,
-                        color: Colors.white,
-                        icon: Icon(
-                          value.isPlaying
-                              ? Icons.pause_circle_filled
-                              : Icons.play_circle_filled,
-                        ),
-                        onPressed: _togglePlay,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            iconSize: 40,
+                            color: Colors.white,
+                            icon: const Icon(Icons.replay_10),
+                            onPressed: () =>
+                                _seekRelative(const Duration(seconds: -10)),
+                          ),
+                          IconButton(
+                            iconSize: 64,
+                            color: Colors.white,
+                            icon: Icon(
+                              value.isPlaying
+                                  ? Icons.pause_circle_filled
+                                  : Icons.play_circle_filled,
+                            ),
+                            onPressed: _togglePlay,
+                          ),
+                          IconButton(
+                            iconSize: 40,
+                            color: Colors.white,
+                            icon: const Icon(Icons.forward_10),
+                            onPressed: () =>
+                                _seekRelative(const Duration(seconds: 10)),
+                          ),
+                        ],
                       ),
                       Positioned(
                         left: 0,
@@ -233,45 +275,85 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
                               colors: [Colors.transparent, Colors.black87],
                             ),
                           ),
-                          padding: const EdgeInsets.fromLTRB(12, 24, 12, 8),
-                          child: Row(
+                          padding: const EdgeInsets.fromLTRB(12, 24, 12, 4),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
-                                _formatDuration(value.position),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: VideoProgressIndicator(
-                                  _controller,
-                                  allowScrubbing: true,
-                                  colors: VideoProgressColors(
-                                    playedColor:
-                                        Theme.of(context).colorScheme.primary,
-                                    bufferedColor: Colors.white38,
-                                    backgroundColor: Colors.white12,
+                              Row(
+                                children: [
+                                  Text(
+                                    _formatDuration(value.position),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: VideoProgressIndicator(
+                                      _controller,
+                                      allowScrubbing: true,
+                                      colors: VideoProgressColors(
+                                        playedColor: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        bufferedColor: Colors.white38,
+                                        backgroundColor: Colors.white12,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _formatDuration(value.duration),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const SizedBox(width: 8),
-                              Text(
-                                _formatDuration(value.duration),
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                              IconButton(
-                                color: Colors.white,
-                                icon: Icon(
-                                  value.volume > 0
-                                      ? Icons.volume_up
-                                      : Icons.volume_off,
-                                ),
-                                onPressed: _toggleMute,
+                              Row(
+                                children: [
+                                  IconButton(
+                                    color: Colors.white,
+                                    icon: Icon(
+                                      value.volume <= 0
+                                          ? Icons.volume_off
+                                          : value.volume < 0.5
+                                          ? Icons.volume_down
+                                          : Icons.volume_up,
+                                    ),
+                                    onPressed: _toggleMute,
+                                  ),
+                                  Expanded(
+                                    child: SliderTheme(
+                                      data: SliderThemeData(
+                                        trackHeight: 2,
+                                        thumbShape: const RoundSliderThumbShape(
+                                          enabledThumbRadius: 6,
+                                        ),
+                                        overlayShape:
+                                            const RoundSliderOverlayShape(
+                                              overlayRadius: 12,
+                                            ),
+                                        activeTrackColor: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                        inactiveTrackColor: Colors.white24,
+                                        thumbColor: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
+                                      ),
+                                      child: Slider(
+                                        value: value.volume.clamp(0, 1),
+                                        onChanged: (v) {
+                                          _controller.setVolume(v);
+                                          _scheduleHide();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -434,18 +516,53 @@ class _ViewerBottomBarState extends ConsumerState<_ViewerBottomBar> {
   }
 
   void _showTags(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showModalBottomSheet(
       context: context,
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(16),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: widget.post.tags
-              .map((tag) => Chip(label: Text(tag)))
-              .toList(),
+      isScrollControlled: true,
+      builder: (sheetContext) => DraggableScrollableSheet(
+        initialChildSize: 0.5,
+        minChildSize: 0.25,
+        maxChildSize: 0.9,
+        expand: false,
+        builder: (sheetContext, scrollController) => SingleChildScrollView(
+          controller: scrollController,
+          padding: const EdgeInsets.all(16),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: widget.post.tags
+                .map(
+                  (tag) => InputChip(
+                    label: Text(tag),
+                    tooltip: l10n.viewerTagSearchTooltip,
+                    onPressed: () => _searchTagInNewSession(sheetContext, tag),
+                    deleteIcon: const Icon(Icons.add, size: 18),
+                    deleteButtonTooltipMessage: l10n.viewerTagAddTooltip,
+                    onDeleted: () => _addTagToCurrentSession(tag),
+                  ),
+                )
+                .toList(),
+          ),
         ),
       ),
     );
+  }
+
+  void _searchTagInNewSession(BuildContext sheetContext, String tag) {
+    ref.read(activeSearchTagsProvider.notifier).state = [tag];
+    Navigator.of(sheetContext).popUntil((route) => route.isFirst);
+    GoRouter.of(sheetContext).go('/search');
+  }
+
+  void _addTagToCurrentSession(String tag) {
+    final l10n = AppLocalizations.of(context)!;
+    final current = ref.read(activeSearchTagsProvider);
+    if (!current.contains(tag)) {
+      ref.read(activeSearchTagsProvider.notifier).state = [...current, tag];
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(l10n.viewerTagAdded(tag))));
   }
 }

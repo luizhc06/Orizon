@@ -109,5 +109,18 @@
   "viewerOpenBrowser": "Abrir no navegador",
   "viewerPermissionDenied": "Permissão de galeria negada",
   "viewerSaved": "Salvo na galeria",
-  "viewerDownloadError": "Erro ao baixar: {error}"
+  "viewerDownloadError": "Erro ao baixar: {error}",
+  "viewerTagSearchTooltip": "Buscar somente esta tag",
+  "viewerTagAddTooltip": "Adicionar à busca atual",
+  "viewerTagAdded": "\"{tag}\" adicionada à busca atual",
+
+  "savedSearchesTitle": "Buscas salvas",
+  "savedSearchesEmpty": "Nenhuma busca salva ainda",
+  "savedSearchesSaveButton": "Salvar atual",
+  "savedSearchesDialogTitle": "Salvar busca",
+  "savedSearchesDialogHint": "Nome da busca",
+  "savedSearchesDialogSave": "Salvar",
+  "savedSearchesDialogCancel": "Cancelar",
+  "savedSearchesSaved": "Busca salva",
+  "savedSearchesDeleteTooltip": "Excluir"
 }

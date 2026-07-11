@@ -109,5 +109,18 @@
   "viewerOpenBrowser": "Im Browser öffnen",
   "viewerPermissionDenied": "Zugriff auf Galerie verweigert",
   "viewerSaved": "In Galerie gespeichert",
-  "viewerDownloadError": "Fehler beim Download: {error}"
+  "viewerDownloadError": "Fehler beim Download: {error}",
+  "viewerTagSearchTooltip": "Nur nach diesem Tag suchen",
+  "viewerTagAddTooltip": "Zur aktuellen Suche hinzufügen",
+  "viewerTagAdded": "\"{tag}\" zur aktuellen Suche hinzugefügt",
+
+  "savedSearchesTitle": "Gespeicherte Suchen",
+  "savedSearchesEmpty": "Noch keine gespeicherten Suchen",
+  "savedSearchesSaveButton": "Aktuelle speichern",
+  "savedSearchesDialogTitle": "Suche speichern",
+  "savedSearchesDialogHint": "Name der Suche",
+  "savedSearchesDialogSave": "Speichern",
+  "savedSearchesDialogCancel": "Abbrechen",
+  "savedSearchesSaved": "Suche gespeichert",
+  "savedSearchesDeleteTooltip": "Löschen"
 }
