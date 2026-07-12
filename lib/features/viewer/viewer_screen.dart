@@ -130,6 +130,7 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
   late final VideoPlayerController _controller;
   bool _showControls = true;
   Timer? _hideTimer;
+  double _lastVolume = 1;
 
   @override
   void initState() {
@@ -180,7 +181,13 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
   }
 
   void _toggleMute() {
-    _controller.setVolume(_controller.value.volume > 0 ? 0 : 1);
+    final currentVolume = _controller.value.volume;
+    if (currentVolume > 0) {
+      _lastVolume = currentVolume;
+      _controller.setVolume(0);
+    } else {
+      _controller.setVolume(_lastVolume > 0 ? _lastVolume : 1);
+    }
     _scheduleHide();
   }
 
@@ -215,156 +222,159 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        return GestureDetector(
-          onTap: _toggleControls,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Center(
-                child: AspectRatio(
-                  aspectRatio: value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                ),
-              ),
-              AnimatedOpacity(
-                opacity: _showControls ? 1 : 0,
-                duration: const Duration(milliseconds: 200),
-                child: IgnorePointer(
-                  ignoring: !_showControls,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          IconButton(
-                            iconSize: 40,
-                            color: Colors.white,
-                            icon: const Icon(Icons.replay_10),
-                            onPressed: () =>
-                                _seekRelative(const Duration(seconds: -10)),
-                          ),
-                          IconButton(
-                            iconSize: 64,
-                            color: Colors.white,
-                            icon: Icon(
-                              value.isPlaying
-                                  ? Icons.pause_circle_filled
-                                  : Icons.play_circle_filled,
-                            ),
-                            onPressed: _togglePlay,
-                          ),
-                          IconButton(
-                            iconSize: 40,
-                            color: Colors.white,
-                            icon: const Icon(Icons.forward_10),
-                            onPressed: () =>
-                                _seekRelative(const Duration(seconds: 10)),
-                          ),
-                        ],
-                      ),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [Colors.transparent, Colors.black87],
-                            ),
-                          ),
-                          padding: const EdgeInsets.fromLTRB(12, 24, 12, 4),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    _formatDuration(value.position),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: VideoProgressIndicator(
-                                      _controller,
-                                      allowScrubbing: true,
-                                      colors: VideoProgressColors(
-                                        playedColor: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                        bufferedColor: Colors.white38,
-                                        backgroundColor: Colors.white12,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    _formatDuration(value.duration),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    color: Colors.white,
-                                    icon: Icon(
-                                      value.volume <= 0
-                                          ? Icons.volume_off
-                                          : value.volume < 0.5
-                                          ? Icons.volume_down
-                                          : Icons.volume_up,
-                                    ),
-                                    onPressed: _toggleMute,
-                                  ),
-                                  Expanded(
-                                    child: SliderTheme(
-                                      data: SliderThemeData(
-                                        trackHeight: 2,
-                                        thumbShape: const RoundSliderThumbShape(
-                                          enabledThumbRadius: 6,
-                                        ),
-                                        overlayShape:
-                                            const RoundSliderOverlayShape(
-                                              overlayRadius: 12,
-                                            ),
-                                        activeTrackColor: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                        inactiveTrackColor: Colors.white24,
-                                        thumbColor: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
-                                      ),
-                                      child: Slider(
-                                        value: value.volume.clamp(0, 1),
-                                        onChanged: (v) {
-                                          _controller.setVolume(v);
-                                          _scheduleHide();
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: _toggleControls,
+                child: Center(
+                  child: AspectRatio(
+                    aspectRatio: value.aspectRatio,
+                    child: VideoPlayer(_controller),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+            AnimatedOpacity(
+              opacity: _showControls ? 1 : 0,
+              duration: const Duration(milliseconds: 200),
+              child: IgnorePointer(
+                ignoring: !_showControls,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          iconSize: 40,
+                          color: Colors.white,
+                          icon: const Icon(Icons.replay_10),
+                          onPressed: () =>
+                              _seekRelative(const Duration(seconds: -10)),
+                        ),
+                        IconButton(
+                          iconSize: 64,
+                          color: Colors.white,
+                          icon: Icon(
+                            value.isPlaying
+                                ? Icons.pause_circle_filled
+                                : Icons.play_circle_filled,
+                          ),
+                          onPressed: _togglePlay,
+                        ),
+                        IconButton(
+                          iconSize: 40,
+                          color: Colors.white,
+                          icon: const Icon(Icons.forward_10),
+                          onPressed: () =>
+                              _seekRelative(const Duration(seconds: 10)),
+                        ),
+                      ],
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.transparent, Colors.black87],
+                          ),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(12, 24, 12, 4),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  _formatDuration(value.position),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: VideoProgressIndicator(
+                                    _controller,
+                                    allowScrubbing: true,
+                                    colors: VideoProgressColors(
+                                      playedColor: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                      bufferedColor: Colors.white38,
+                                      backgroundColor: Colors.white12,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  _formatDuration(value.duration),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                IconButton(
+                                  color: Colors.white,
+                                  icon: Icon(
+                                    value.volume <= 0
+                                        ? Icons.volume_off
+                                        : value.volume < 0.5
+                                        ? Icons.volume_down
+                                        : Icons.volume_up,
+                                  ),
+                                  onPressed: _toggleMute,
+                                ),
+                                Expanded(
+                                  child: SliderTheme(
+                                    data: SliderThemeData(
+                                      trackHeight: 2,
+                                      thumbShape: const RoundSliderThumbShape(
+                                        enabledThumbRadius: 6,
+                                      ),
+                                      overlayShape:
+                                          const RoundSliderOverlayShape(
+                                            overlayRadius: 12,
+                                          ),
+                                      activeTrackColor: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                      inactiveTrackColor: Colors.white24,
+                                      thumbColor: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
+                                    child: Slider(
+                                      value: value.volume.clamp(0, 1),
+                                      onChanged: (v) {
+                                        _controller.setVolume(v);
+                                        _scheduleHide();
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         );
       },
     );

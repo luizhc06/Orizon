@@ -13,6 +13,17 @@ class ChangelogEntry {
 /// Changelog estático, mantido manualmente a cada mudança relevante.
 const List<ChangelogEntry> changelogEntries = [
   ChangelogEntry(
+    version: '1.0.5',
+    date: '2026-07-12',
+    changes: [
+      'Corrigido: controles de vídeo bugados — tocar em play, avançar/'
+          'voltar ou no volume também escondia os controles na hora, sendo '
+          'preciso tocar duas vezes pra funcionar.',
+      'Corrigido: mudo agora volta pro volume anterior em vez de sempre ir '
+          'pra 100%.',
+    ],
+  ),
+  ChangelogEntry(
     version: '1.0.4',
     date: '2026-07-11',
     changes: [
