@@ -13,6 +13,18 @@ class ChangelogEntry {
 /// Changelog estático, mantido manualmente a cada mudança relevante.
 const List<ChangelogEntry> changelogEntries = [
   ChangelogEntry(
+    version: '1.0.6',
+    date: '2026-07-12',
+    changes: [
+      'Adicionado: carregamento progressivo de imagens no viewer — mostra a '
+          'prévia por baixo enquanto a imagem em alta qualidade carrega, com '
+          'barra de progresso, porcentagem e velocidade.',
+      'Adicionado: prévia por baixo do carregamento de vídeo também.',
+      'Melhorado: download de fotos e vídeos agora mostra o progresso real '
+          'no botão, em vez de um carregando indefinido.',
+    ],
+  ),
+  ChangelogEntry(
     version: '1.0.5',
     date: '2026-07-12',
     changes: [
