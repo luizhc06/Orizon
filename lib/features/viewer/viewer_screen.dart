@@ -253,9 +253,14 @@ class _VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
   late final VideoPlayerController _controller;
+  final TransformationController _transform = TransformationController();
   bool _showControls = true;
   Timer? _hideTimer;
   double _lastVolume = 1;
+
+  /// Posição sendo arrastada no slider de busca; null quando não há arrasto.
+  double? _dragPositionMs;
+  TapDownDetails? _doubleTapDetails;
 
   @override
   void initState() {
@@ -277,8 +282,22 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
   @override
   void dispose() {
     _hideTimer?.cancel();
+    _transform.dispose();
     _controller.dispose();
     super.dispose();
+  }
+
+  void _handleDoubleTap() {
+    if (_transform.value != Matrix4.identity()) {
+      _transform.value = Matrix4.identity();
+    } else {
+      final pos = _doubleTapDetails?.localPosition;
+      if (pos == null) return;
+      // Aproxima 2.5x centralizado no ponto do toque.
+      _transform.value = Matrix4.identity()
+        ..translateByDouble(-pos.dx * 1.5, -pos.dy * 1.5, 0, 1)
+        ..scaleByDouble(2.5, 2.5, 2.5, 1);
+    }
   }
 
   void _scheduleHide() {
@@ -327,6 +346,27 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
     _scheduleHide();
   }
 
+  /// Botão redondo com fundo escuro pra ficar visível sobre qualquer vídeo.
+  Widget _controlButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+    double size = 32,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: const BoxDecoration(
+        color: Colors.black54,
+        shape: BoxShape.circle,
+      ),
+      child: IconButton(
+        iconSize: size,
+        color: Colors.white,
+        icon: Icon(icon),
+        onPressed: onPressed,
+      ),
+    );
+  }
+
   static String _formatDuration(Duration d) {
     final minutes = d.inMinutes;
     final seconds = (d.inSeconds % 60).toString().padLeft(2, '0');
@@ -357,17 +397,38 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
           );
         }
 
+        final durationMs = value.duration.inMilliseconds.toDouble();
+        final positionMs =
+            _dragPositionMs ??
+            value.position.inMilliseconds.toDouble().clamp(0, durationMs);
+        final sliderTheme = SliderThemeData(
+          trackHeight: 3,
+          thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+          overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+          activeTrackColor: Theme.of(context).colorScheme.primary,
+          inactiveTrackColor: Colors.white30,
+          thumbColor: Colors.white,
+        );
+
         return Stack(
           alignment: Alignment.center,
           children: [
+            // Vídeo com zoom por pinça e toque duplo, igual às imagens.
             Positioned.fill(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: _toggleControls,
-                child: Center(
-                  child: AspectRatio(
-                    aspectRatio: value.aspectRatio,
-                    child: VideoPlayer(_controller),
+                onDoubleTapDown: (d) => _doubleTapDetails = d,
+                onDoubleTap: _handleDoubleTap,
+                child: InteractiveViewer(
+                  transformationController: _transform,
+                  minScale: 1,
+                  maxScale: 5,
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: value.aspectRatio,
+                      child: VideoPlayer(_controller),
+                    ),
                   ),
                 ),
               ),
@@ -380,30 +441,33 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
+                    // Escurece o vídeo enquanto os controles estão na tela,
+                    // senão ícone branco some em cima de vídeo claro. Tocar
+                    // no escurecido também esconde os controles.
+                    Positioned.fill(
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: _toggleControls,
+                        child: Container(color: Colors.black38),
+                      ),
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        IconButton(
-                          iconSize: 40,
-                          color: Colors.white,
-                          icon: const Icon(Icons.replay_10),
+                        _controlButton(
+                          icon: Icons.replay_10,
                           onPressed: () =>
                               _seekRelative(const Duration(seconds: -10)),
                         ),
-                        IconButton(
-                          iconSize: 64,
-                          color: Colors.white,
-                          icon: Icon(
-                            value.isPlaying
-                                ? Icons.pause_circle_filled
-                                : Icons.play_circle_filled,
-                          ),
+                        _controlButton(
+                          icon: value.isPlaying
+                              ? Icons.pause
+                              : Icons.play_arrow,
+                          size: 48,
                           onPressed: _togglePlay,
                         ),
-                        IconButton(
-                          iconSize: 40,
-                          color: Colors.white,
-                          icon: const Icon(Icons.forward_10),
+                        _controlButton(
+                          icon: Icons.forward_10,
                           onPressed: () =>
                               _seekRelative(const Duration(seconds: 10)),
                         ),
@@ -418,42 +482,54 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Colors.transparent, Colors.black87],
+                            colors: [Colors.transparent, Colors.black],
                           ),
                         ),
-                        padding: const EdgeInsets.fromLTRB(12, 24, 12, 4),
+                        padding: const EdgeInsets.fromLTRB(12, 32, 12, 4),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Row(
                               children: [
                                 Text(
-                                  _formatDuration(value.position),
+                                  _formatDuration(
+                                    Duration(milliseconds: positionMs.round()),
+                                  ),
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 12,
+                                    fontSize: 13,
                                   ),
                                 ),
-                                const SizedBox(width: 8),
                                 Expanded(
-                                  child: VideoProgressIndicator(
-                                    _controller,
-                                    allowScrubbing: true,
-                                    colors: VideoProgressColors(
-                                      playedColor: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                      bufferedColor: Colors.white38,
-                                      backgroundColor: Colors.white12,
+                                  child: SliderTheme(
+                                    data: sliderTheme,
+                                    child: Slider(
+                                      value: positionMs.toDouble(),
+                                      max: durationMs > 0 ? durationMs : 1,
+                                      onChangeStart: (v) {
+                                        // Trava o auto-hide enquanto arrasta,
+                                        // senão os controles somem no meio.
+                                        _hideTimer?.cancel();
+                                        setState(() => _dragPositionMs = v);
+                                      },
+                                      onChanged: (v) => setState(
+                                        () => _dragPositionMs = v,
+                                      ),
+                                      onChangeEnd: (v) {
+                                        _controller.seekTo(
+                                          Duration(milliseconds: v.round()),
+                                        );
+                                        setState(() => _dragPositionMs = null);
+                                        _scheduleHide();
+                                      },
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 8),
                                 Text(
                                   _formatDuration(value.duration),
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 12,
+                                    fontSize: 13,
                                   ),
                                 ),
                               ],
@@ -473,29 +549,14 @@ class _VideoPlayerWidgetState extends State<_VideoPlayerWidget> {
                                 ),
                                 Expanded(
                                   child: SliderTheme(
-                                    data: SliderThemeData(
-                                      trackHeight: 2,
-                                      thumbShape: const RoundSliderThumbShape(
-                                        enabledThumbRadius: 6,
-                                      ),
-                                      overlayShape:
-                                          const RoundSliderOverlayShape(
-                                            overlayRadius: 12,
-                                          ),
-                                      activeTrackColor: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                      inactiveTrackColor: Colors.white24,
-                                      thumbColor: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                    ),
+                                    data: sliderTheme,
                                     child: Slider(
                                       value: value.volume.clamp(0, 1),
-                                      onChanged: (v) {
-                                        _controller.setVolume(v);
-                                        _scheduleHide();
-                                      },
+                                      onChangeStart: (_) =>
+                                          _hideTimer?.cancel(),
+                                      onChanged: (v) =>
+                                          _controller.setVolume(v),
+                                      onChangeEnd: (_) => _scheduleHide(),
                                     ),
                                   ),
                                 ),

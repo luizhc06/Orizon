@@ -13,6 +13,18 @@ class ChangelogEntry {
 /// Changelog estático, mantido manualmente a cada mudança relevante.
 const List<ChangelogEntry> changelogEntries = [
   ChangelogEntry(
+    version: '1.0.7',
+    date: '2026-07-12',
+    changes: [
+      'Adicionado: zoom em vídeos — pinça e toque duplo, igual às imagens.',
+      'Melhorado: controles de vídeo refeitos — fundo escurece quando '
+          'aparecem (dava pra não enxergar em vídeo claro), botões com '
+          'fundo redondo, barra de busca maior e mais fácil de arrastar.',
+      'Corrigido: os controles sumiam sozinhos enquanto você arrastava a '
+          'barra de progresso ou o volume.',
+    ],
+  ),
+  ChangelogEntry(
     version: '1.0.6',
     date: '2026-07-12',
     changes: [
