@@ -44,3 +44,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 PLAY_STORE_LISTING.md
+
+# Estado de UI local do vault notes/ (Obsidian) — muda a cada abertura
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
